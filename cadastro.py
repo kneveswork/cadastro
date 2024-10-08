@@ -2,6 +2,18 @@ import pandas as pd
 import time
 import pyperclip
 import pyautogui
+import pygetwindow as gw
+
+# Verificar se o Total On está em foco
+def garantir_foco_tota_on():
+    try:
+        window = gw.getWindowsWithTitle('Total On')[0]
+        if window.isMinimized:
+            window.restore()
+        window.activate()
+        time.sleep(1)  # Aguarde para garantir que a janela está ativa
+    except IndexError:
+        print("A janela do Total On não foi encontrada.")
 
 def selecionar_texto(x_inicio, y_inicio, x_fim, y_fim):
     # Move o mouse para a posição inicial e pressiona o botão esquerdo
@@ -35,13 +47,14 @@ u = 0
 d = 0
 cst = 0
 om = 0
-pyautogui.click(x=1070 ,y=1063) # abrir o total On
-while i < 49:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
+#pyautogui.hotkey('alt', 'tab') # abrir o total On
+garantir_foco_tota_on()
+while i < 29:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
     pyautogui.click(x=600 ,y=388) # abrir dados cadastrais
     pyautogui.doubleClick(x=523 ,y=354) # selecionar todo o campo de codigo barras
     pyautogui.press("backspace") # apagar se tiver alguma coisa
     time.sleep(2)
-    pyautogui.click(x=523 , y=354) #clicar no parametro de codigo de barras
+    #pyautogui.click(x=523 , y=354) #clicar no parametro de codigo de barras
     pyperclip.copy(codbarras[i]) # copia o codigo de barras na posição i para input do teclado
     pyautogui.hotkey("ctrl", "v") # cola
     pyautogui.press("enter") # pressiona enter para pesquisar produto
@@ -52,10 +65,8 @@ while i < 49:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
     pyperclip.copy(descricao[i])
     pyautogui.hotkey("ctrl", "v")
 
-    pyautogui.doubleClick(x=635 ,y=445) # seleciona conteudo do SKU
-    pyautogui.press("backspace") # apaga conteudo
+    selecionar_texto(657, 444, 573, 444) # seleciona conteudo do SKU
     time.sleep(1)
-    pyautogui.click(x=635 ,y=445) # clica no SKU
     pyperclip.copy(sku[i]) # Copia valor na posição i do array
     pyautogui.hotkey("ctrl", "v") # cola
     pyautogui.press("enter")
@@ -88,6 +99,20 @@ while i < 49:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
     pyautogui.press('down')
     pyautogui.press("enter")
 
+    pyautogui.click(x=1011 ,y=502)
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.click(x=1011 ,y=502)
+
+    pyautogui.click(x=1097 ,y=500)
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.press('down')
+    pyautogui.click(x=1097 ,y=500)
+
     # parte de tributações
     pyautogui.click(x=829 ,y=391) # abre a opção de tributações
     pyautogui.click(x=873 ,y=356) # clica no nome do produto e da enter
@@ -95,7 +120,7 @@ while i < 49:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
     time.sleep(1)
     pyautogui.doubleClick(x=976 ,y=430) # clica no CFOP para verificar se tem ou não tem ST
     pyautogui.rightClick(x=976 ,y=430) # botão direto
-    if (st[i] == 0.0): 
+    if (st[i + 1] == 0.0): 
         res = pyperclip.copy("5102")
         pyautogui.press("down")
         pyautogui.press("down")
@@ -103,12 +128,18 @@ while i < 49:                # ALTERE PARA QUANTIDADE DE PRODUTOS NA NOTA
         pyautogui.press("down")
         pyautogui.press("enter")
         time.sleep(2)
+        pyautogui.click(x=1310 ,y=571)
+        pyautogui.press("down")
+        pyautogui.press("down")
+        pyautogui.press("down")
+        pyautogui.click(x=1310, y=541) 
         pyautogui.click(x=674 ,y=502) # clica em situação tributaria
         while (cst <= 14):
             pyautogui.press("up")
             cst += 1
-        pyautogui.click(x=916 ,y=778)
+        pyautogui.click(x=916 ,y=778) # fecha situação tributaria
         cst = 0
+        time.sleep(1)
     elif (st[i] != 0.0):
         result = pyperclip.copy("5405")
         pyautogui.press("down")
